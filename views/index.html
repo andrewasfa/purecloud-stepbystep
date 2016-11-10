@@ -1,0 +1,137 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+
+<!-- You might want to try something fancier: -->
+<!-- html/nunjucks docs: http://mozilla.github.io/nunjucks/ -->
+<!-- jade: http://jade-lang.com/ -->
+<!-- haml: http://haml.info/tutorial.html -->
+<!-- hbs(handlebars): http://handlebarsjs.com/expressions.html -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Welcome to !</title>
+    <meta name="description" content="A cool thing made with HyperDev">
+    <link id="favicon" rel="icon" href="https://hyperdev.com/favicon-app.ico" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <header>
+      <h1>
+        Simple app
+      </h1>
+    </header>
+
+    <main>
+      <script>
+        
+       
+        
+        function requestQueues(){
+          $.get('/api/queues');
+        }
+        
+        
+        function loadQueues(){
+          $('#groupList').empty();
+          $.get('/api/listqueues', function(queues) {
+            $.each(queues, function (i, item) {
+              $('#groupList').append($('<option>', { 
+                value: item.key,
+                text : item.value 
+                }));
+            });
+  
+          });
+          
+        }
+        
+        
+        function authenticate(){
+          $.post("/api/auth", function(data) {
+          console.log( "Authenticate command issued:", data );
+          });
+        }
+        
+        function getStats(){
+          var e = document.getElementById("groupList");
+          var strQueue = e.options[e.selectedIndex].value;
+          console.log(strQueue);
+          $.post('/api/stats', {queueid:strQueue}, function(data, status){
+          });
+        }
+          
+         function showStats(){
+          $.get('/api/liststats', function(stats) {
+          stats.forEach(function(stat) {
+            $('<li></li>').text(stat.metrics).appendTo('ul#dreams');
+            $('input').val('');
+            $('input').focus();
+          });
+                
+        });
+           
+        }
+        
+        function clearToken(){
+          $.get("/api/clear", function(data) {
+          console.log( "Token cleared:", data );
+          });
+        }
+        
+        
+       
+      /* 
+      $(document).ready(function(){
+      var listItems= "";
+      for (var i = 0; i < newa.length; i++){
+        listItems+= "<option value='" + dreams[i] + "</option>";
+      }
+      $("#grouList").html(listItems);
+      }); 
+      */  
+        
+      </script>
+      
+  
+
+      <button onclick=authenticate()>Authenticate</button>
+      <button onclick=clearToken()>Clear token</button> 
+      <p></p>
+      <button onclick=requestQueues()>Get Queues</button>
+      <p></p>
+      <button onclick=loadQueues()>Load Queues</button>
+      
+      <select id="groupList">
+      </select>
+      
+      <p></p>
+      <button onclick=getStats()>Get Stats</button>
+      
+      <p></p>
+      <button onclick=showStats()>Show Stats</button>
+  
+     
+      <section class="dreams">
+        <ul id="dreams">
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <a href="https://hyperdev.com">
+        Remix this in HyperDev
+      </a>
+    </footer>
+
+    <!-- Your web-app is https, so your scripts need to be too -->
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"
+            integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
+            crossorigin="anonymous"></script>
+    <script src="/client.js"></script>
+
+  </body>
+</html>
